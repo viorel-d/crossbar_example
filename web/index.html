@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Crossbar HelloWorld</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="vendor/autobahn.min.js"></script>
+</head>
+<body>
+    
+    <script>
+        "use strict";
+        var connection = new autobahn.Connection({
+            transports: [
+                {
+                    'type': 'websocket',
+                    'url': 'ws://0.0.0.0:8080/ws'
+                },
+                {
+                    'type': 'longpoll',
+                    'url': 'http://0.0.0.0:8080/lp'
+                }
+            ],
+            realm: 'realm1'
+        });
+
+        connection.onopen = function ( session ) {
+            console.log('connected!');
+
+            session.call('com.app.hello')
+                   .then(
+                       function(msg) {
+                           console.log(msg);
+                       }
+                   );
+            session.subscribe('com.app.ping', function ( message ) {
+                console.log(message);
+            });
+        }
+        try{
+            connection.open();
+        } catch(e) {
+            console.error(e);
+        }   
+        
+    </script>
+</body>
+</html>

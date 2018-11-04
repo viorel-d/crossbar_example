@@ -1,0 +1,24 @@
+version: '3'
+
+services:
+  client:
+    build:
+      context: .
+      dockerfile: client.dockerfile
+    links:
+      - router
+    networks: 
+      - crossbar
+
+  router:
+    image: crossbario/crossbar
+    ports:
+      - "8080:8080"
+    networks: 
+      - crossbar
+
+networks: 
+  crossbar:
+    driver: "bridge"
+
+  
